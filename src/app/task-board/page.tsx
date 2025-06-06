@@ -10,7 +10,7 @@ export default function TaskBoardPage() {
   const router = useRouter();
 
   const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
   const [list, setList] = useState('');
@@ -22,6 +22,14 @@ export default function TaskBoardPage() {
   const deleteTask = trpc.tasks.deleteTask.useMutation();
   const updateTask = trpc.tasks.updateTask.useMutation();
   const generateFromAI = trpc.tasks.generateFromAI.useMutation();
+  type Task = {
+    id: number;
+    title: string;
+    completed: boolean;
+    description?: string | null;
+    date?: string | null;
+    list?: string | null;
+  };
 
   useEffect(() => {
     if (!isAuthLoading && !user) {
@@ -95,7 +103,7 @@ export default function TaskBoardPage() {
     setList(task.list || '');
   };
 
-  const handleMarkComplete = (task: any, completed: boolean) => {
+  const handleMarkComplete = (task: Task, completed: boolean) => {
     toggleComplete.mutate(
       { id: task.id, completed },
       {

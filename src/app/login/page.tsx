@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/navigation';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import Link from 'next/link';
 export default function LoginPage() {
   const { user, isLoading } = useUser();
   const router = useRouter();
@@ -45,10 +45,9 @@ export default function LoginPage() {
           </div>
           <a href="#" className="text-white text-decoration-underline">Forgot Password?</a>
         </div>
-        <button className="btn btn-light w-100 fw-bold" type="submit">Log in</button>
-        <a href="/api/auth/login?returnTo=/task-board" className="btn btn-primary w-100">
+        <Link href="/api/auth/login?returnTo=/task-board" className="btn btn-primary w-100 text-center">
           Log In
-        </a>
+        </Link>
       </form>
     </div>
   );

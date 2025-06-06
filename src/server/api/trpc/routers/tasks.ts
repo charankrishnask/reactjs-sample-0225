@@ -85,18 +85,27 @@ export const tasksRouter = router({
   updateTask: publicProcedure
     .input(
       z.object({
-        id: z.number(), // Changed from string ➜ number to match DB
+        id: z.number(),
         description: z.string().nullable().optional(),
         date: z.string().nullable().optional(),
         list: z.string().nullable().optional(),
       })
     )
     .mutation(async ({ input }) => {
-      const { id, ...fields } = input;
+      const { id, description, date, list } = input;
+
+      const updatePayload: {
+        description?: string | null;
+        date?: string | null;
+        list?: string | null;
+      } = {};
+      if (description !== undefined) updatePayload.description = description;
+      if (date !== undefined) updatePayload.date = date;
+      if (list !== undefined) updatePayload.list = list;
 
       const { error } = await supabase
         .from('tasks')
-        .update(fields)
+        .update(updatePayload)
         .eq('id', id);
 
       if (error) {
@@ -109,29 +118,29 @@ export const tasksRouter = router({
 
   // ✅ Generate tasks using Gemini AI
   generateFromAI: publicProcedure
-  .input(z.object({ prompt: z.string() }))
-  .mutation(async ({ input }) => {
-    try {
-      const result = await model.generateContent(input.prompt);
-      const text = result.response.text();
+    .input(z.object({ prompt: z.string() }))
+    .mutation(async ({ input }) => {
+      try {
+        const result = await model.generateContent(input.prompt);
+        const text = result.response.text();
 
-      const tasks = text
-        .split('\n')
-        .map((line) => line.replace(/^\d+[\).]?\s*/, '').trim())
-        .filter((line) => line.length > 0);
+        const tasks = text
+          .split('\n')
+          .map((line) => line.replace(/^\d+[\).]?\s*/, '').trim())
+          .filter((line) => line.length > 0);
 
-      const inserts = tasks.map((title) => ({
-        title,
-        completed: false,
-      }));
+        const inserts = tasks.map((title) => ({
+          title,
+          completed: false,
+        }));
 
-      const { error } = await supabase.from('tasks').insert(inserts);
-      if (error) throw new Error(error.message);
+        const { error } = await supabase.from('tasks').insert(inserts);
+        if (error) throw new Error(error.message);
 
-      return { added: inserts.length };
-    } catch (err: any) {
-      console.error('Gemini API Error:', err.message || err);
-      throw new Error('Failed to generate tasks from AI.');
-    }
-  }),
+        return { added: inserts.length };
+      } catch (err: unknown) {
+        console.error('Gemini API Error:', err);
+        throw new Error('Failed to generate tasks from AI.');
+      }
+    }),
 });
