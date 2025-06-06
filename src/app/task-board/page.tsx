@@ -64,7 +64,7 @@ export default function TaskBoardPage() {
 
           const modal = document.getElementById('taskModal');
           if (modal) {
-            // @ts-expect-error
+            // @ts-expect-error: Suppressing bootstrap modal type error
             const instance = bootstrap.Modal.getInstance(modal);
             instance?.hide();
             console.log(selectedTask?.id)
@@ -96,7 +96,7 @@ export default function TaskBoardPage() {
     );
   };
 
-  const handleOpenTask = (task: any) => {
+  const handleOpenTask = (task: Task) => {
     setSelectedTask(task);
     setDescription(task.description || '');
     setDate(task.date || '');
