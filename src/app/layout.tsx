@@ -4,12 +4,12 @@ import { ReactNode, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './globals.css';
-
+import Link from 'next/link'; // ❌ Remove this line
+import Image from 'next/image';
 import { UserProvider, useUser } from '@auth0/nextjs-auth0';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { trpc } from '@/utils/trpc';
 import { getClient } from '@/utils/trpc';
-import Link from 'next/link';
 
 const queryClient = new QueryClient();
 
@@ -21,24 +21,16 @@ function Navbar() {
     <nav className="navbar bg-primary navbar-dark px-3 d-flex justify-content-between">
       <div className="d-flex align-items-center gap-2">
         {/* ✅ Logo image must exist in public/logo.svg */}
-        <img src="/logo.svg" alt="Logo" height="40" />
+        <Image src="/logo.svg" alt="Logo" width={40} height={40} />
         <span className="navbar-brand mb-0 h1">TasksBoard</span>
       </div>
 
       <div className="d-flex align-items-center gap-3">
         {user?.picture && (
-          <img
-            src={user.picture}
-            alt="User"
-            className="rounded-circle"
-            width="40"
-            height="40"
-          />
+          <Image src="/user.jpg" alt="User" width={40} height={40} className="rounded-circle" />
         )}
         {user && (
-          <a href="/api/auth/logout" className="btn btn-outline-light btn-sm">
-            Logout
-          </a>
+          <Link href="/api/auth/logout" legacyBehavior><a>Logout</a></Link>
         )}
       </div>
     </nav>

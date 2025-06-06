@@ -64,7 +64,7 @@ export default function TaskBoardPage() {
 
           const modal = document.getElementById('taskModal');
           if (modal) {
-            // @ts-ignore
+            // @ts-expect-error
             const instance = bootstrap.Modal.getInstance(modal);
             instance?.hide();
             console.log(selectedTask?.id)
