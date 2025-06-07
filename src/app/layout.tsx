@@ -30,7 +30,7 @@ function Navbar() {
           <Image src="/user.jpg" alt="User" width={40} height={40} className="rounded-circle" />
         )}
         {user && (
-          <Link href="/api/auth/logout" legacyBehavior><a>Logout</a></Link>
+          <Link href="/api/auth/logout" >Logout</Link>
         )}
       </div>
     </nav>
